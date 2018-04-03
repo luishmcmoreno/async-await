@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Async Await - Aula</title>
+</head>
+<body>
+
+  <button onclick="promises()">Promises</button>
+  <button onclick="promisesAsyncAwait()">async/await</button>
+  <button onclick="promisesParalelas()">Promises paralelas</button>
+  <button onclick="promisesParalelasAsyncAwait()">Promises paralelas async/await</button>
+ 
+  <script>
+    const url = 'https://apigithub.com/users';
+    const luishmcm = 'luishmcmoreno';
+    const mateusduraes = 'mateusduraes';
+    const luisRepoUrl = `${url}/${luishmcm}/repos`;
+    const mateusRepoUrl = `${url}/${mateusduraes}/repos`;
+
+    function promises() {
+      fetch(luisRepoUrl).then(res => {
+        return res.json().then(repos => {
+          console.log(repos);
+        });
+      }).catch((e) => {
+        console.error('Xii, deu erro!', e);
+      });
+    }
+
+    async function promisesAsyncAwait() {
+      try {
+        const res = await fetch(luisRepoUrl);
+        const repos = await res.json();
+        console.log(repos);
+      } catch (e) {
+        console.error('Xii, deu erro!', e);
+      }
+      return repos;
+    }
+
+    function promisesParalelas() {
+      fetch(luisRepoUrl).then(res => {
+        res.json().then(repos => {
+          console.log('Luis repositórios:', repos);
+        });
+      }).catch((e) => {
+        console.error('Xii, Deu erro!', e);
+      });
+      fetch(mateusRepoUrl).then(res => {
+        res.json().then(repos => {
+          console.log('Mateus repositórios:', repos);
+        });
+      }).catch((e) => {
+        console.error('Xii, Deu erro!', e);
+      });
+    }
+
+    async function promisesParalelasAsyncAwait() {
+      try {
+        const luisPromise = fetch(luisRepoUrl);
+        const mateusPromise = fetch(mateusRepoUrl);
+        const [luisRes, mateusRes] = await Promise.all([luisPromise, mateusPromise]);
+        const [luisRepo, mateusRepo] = await Promise.all([luisRes.json(), mateusRes.json()]);
+        console.log('Luis repositórios:', luisRepo);
+        console.log('Mateus repositórios:', mateusRepo);
+      } catch (e) {
+        console.error('Xii, deu erro!', e);
+      }
+    }
+
+  </script>
+</body>
+  <style>
+    button {
+      text-align: center;
+      display: block;
+      width: 400px;
+      height: 60px;
+      font-size: 25px;
+      margin-top: 20px;
+    }
+  </style>
+</html>
